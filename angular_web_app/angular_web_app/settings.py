@@ -134,4 +134,5 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
+    'https://www.psd2htmlx.com',
 ]
