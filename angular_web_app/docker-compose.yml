@@ -1,0 +1,27 @@
+# version: '3.7'
+# services:
+#   web:
+#     container_name: web-api
+#     build: .
+#     restart: always
+#     command: python manage.py runsever 0.0.0.0:8000
+#     volumes:
+#      - .:/app
+#      - static_volume:/app/static
+    
+# volumes:
+#   static_volume:
+
+
+# version: "2"
+# services:
+#   api:
+#     ports:
+#       - 8000:8000
+#     build:
+#       context: .
+#       dockerfile: ./Dockerfile
+#       args:
+#         STATIC_URL: "/static/"
+#     restart: unless-stopped
+#     command: python manage.py runserver 0.0.0.0:8000
