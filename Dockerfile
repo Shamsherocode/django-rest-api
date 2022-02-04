@@ -1,24 +1,46 @@
-FROM python:3.9
+# FROM python:3.9-alpine
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        postgresql-client \
-    && rm -rf /var/lib/apt/lists/*
 
- 	
-COPY angular_web_app/requirements.txt /app/
+# ENV PYTHONUNBUFFERED 1
 
- 	
+# RUN mkdir /app
+
+# WORKDIR /app
+
+# RUN pip install --upgrade pip
+
+# COPY requirements.txt .
+
+# RUN pip install -r requirements.txt
+
+# COPY ./app /app
+
+# COPY ./entrypoint.sh /
+# ENTRYPOINT ["sh", "/entrypoint.sh"]
+
+FROM python:3.8-alpine
+
+ENV PYTHONUNBUFFERED 1
+
+RUN pip install --upgrade pip
+
+COPY ./requirements.txt /requirements.txt
+RUN apk add --update --no-cache --virtual .tmp gcc libc-dev linux-headers
+RUN pip install -r /requirements.txt
+RUN apk del .tmp
+
+RUN mkdir /app
+COPY ./app /app
 WORKDIR /app
+COPY ./scripts /scripts
 
-RUN pip install -r requirements.txt
+RUN chmod +x /scripts/*
 
-COPY . /app/
+RUN mkdir -p /vol/web/media
+RUN mkdir -p /vol/web/static
+RUN adduser -D user
+RUN chown -R user:user /vol
+RUN chmod -R 755 /vol/web
+USER user
 
-WORKDIR /app/angular_web_app
-
-EXPOSE 8000
-
-RUN python manage.py makemigrations && python manage.py migrate
-
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["entrypoint.sh"]
